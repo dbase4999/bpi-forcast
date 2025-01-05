@@ -1,7 +1,6 @@
 streamlit 
 pandas 
 scikit-learn
-GradientBoostingRegressor
 numpy
 matplotlib
 re
