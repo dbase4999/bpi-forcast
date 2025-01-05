@@ -11,7 +11,6 @@ def load_data(file_path):
     data = pd.read_csv(file_path)
     data["Date"] = pd.to_datetime(data["Date"])
 
-    # Preprocess numeric columns
     def extract_number(value, default=0.0):
         if pd.notnull(value):
             match = re.search(r"\d+(\.\d+)?", str(value))
@@ -29,12 +28,24 @@ def load_data(file_path):
 # Train model
 @st.cache_data
 def train_model(data):
+    # Validasi kolom sebelum encoding
+    if "Project Name" not in data.columns or "Support Item" not in data.columns:
+        st.error("Kolom 'Project Name' atau 'Support Item' tidak ditemukan dalam data.")
+        st.stop()
+
     data_encoded = pd.get_dummies(data, columns=["Project Name", "Support Item"], drop_first=True)
     features = [
         "Inch", "Thickness", "Weight", "Total Order Bars", "Total Order Weight (kg)",
         *[col for col in data_encoded.columns if col.startswith("Project Name_") or col.startswith("Support Item_")]
     ]
     target = "Final Quantity (Total Requests for Support Items in Field Operations)"
+
+    # Validasi kolom hasil encoding
+    encoded_columns = data_encoded.columns
+    missing_columns = [col for col in features if col not in encoded_columns]
+    if missing_columns:
+        st.error(f"Kolom berikut tidak ditemukan dalam data setelah encoding: {missing_columns}")
+        st.stop()
 
     X = data_encoded[features]
     y = data_encoded[target]
@@ -45,7 +56,7 @@ def train_model(data):
 
 # File path
 file_path = r"/workspaces/bpi-forcast/FixUpdated_Dummy_Data_with_BPI-Compatible_Pipe_Variants.csv"
-data = (file_path)
+data = load_data(file_path)
 model, features, data_encoded = train_model(data)
 
 # Streamlit UI
