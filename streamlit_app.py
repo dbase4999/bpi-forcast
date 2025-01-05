@@ -19,8 +19,12 @@ def load_data(file_path):
 
     data["Inch"] = data["Inch"].apply(extract_number)
     data["Thickness"] = data["Thickness"].apply(extract_number)
-    data["Weight"] = data["Weight"].apply(lambda x: float(str(x).replace(" tons", "")) if pd.notnull(x) else 0)
-    data["Total Order Weight (kg)"] = pd.to_numeric(data["Total Order Weight (kg)"], errors="coerce")
+    data["Weight"] = data["Weight"].apply(
+        lambda x: float(str(x).replace(" tons", "")) if pd.notnull(x) else 0
+    )
+    data["Total Order Weight (kg)"] = pd.to_numeric(
+        data["Total Order Weight (kg)"], errors="coerce"
+    )
     data["Total Order Bars"] = pd.to_numeric(data["Total Order Bars"], errors="coerce")
 
     return data
@@ -28,9 +32,15 @@ def load_data(file_path):
 # Train model
 @st.cache_data
 def train_model(data):
-    # Validasi kolom sebelum encoding
-    if "Project Name" not in data.columns or "Support Item" not in data.columns:
-        st.error("Kolom 'Project Name' atau 'Support Item' tidak ditemukan dalam data.")
+    # Validate columns before encoding
+    required_columns = [
+        "Project Name", "Support Item", "Inch", "Thickness", "Weight",
+        "Total Order Bars", "Total Order Weight (kg)",
+        "Final Quantity (Total Requests for Support Items in Field Operations)"
+    ]
+    missing_columns = [col for col in required_columns if col not in data.columns]
+    if missing_columns:
+        st.error(f"Missing columns: {missing_columns}")
         st.stop()
 
     data_encoded = pd.get_dummies(data, columns=["Project Name", "Support Item"], drop_first=True)
@@ -40,13 +50,6 @@ def train_model(data):
     ]
     target = "Final Quantity (Total Requests for Support Items in Field Operations)"
 
-    # Validasi kolom hasil encoding
-    encoded_columns = data_encoded.columns
-    missing_columns = [col for col in features if col not in encoded_columns]
-    if missing_columns:
-        st.error(f"Kolom berikut tidak ditemukan dalam data setelah encoding: {missing_columns}")
-        st.stop()
-
     X = data_encoded[features]
     y = data_encoded[target]
 
@@ -55,7 +58,7 @@ def train_model(data):
     return model, features, data_encoded
 
 # File path
-file_path = r"/workspaces/bpi-forcast/FixUpdated_Dummy_Data_with_BPI-Compatible_Pipe_Variants.csv"
+file_path = r"FixUpdated_Dummy_Data_with_BPI-Compatible_Pipe_Variants.csv"
 data = load_data(file_path)
 model, features, data_encoded = train_model(data)
 
@@ -114,7 +117,7 @@ if project_name and (inch > 0 or thickness > 0 or weight > 0 or total_order_bars
     st.table(predicted_table)
 else:
     st.subheader("Forecast Result")
-    st.write("Silakan masukkan data terkait yang ingin dilakukan forecast.")
+    st.write("Please provide project details to forecast stock requirements.")
 
 # Visualization
 st.subheader("Historical Data Visualization")
