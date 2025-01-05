@@ -44,7 +44,7 @@ def train_model(data):
     return model, features, data_encoded
 
 # File path
-file_path = r"C:\Users\aqsha\Downloads\FixUpdated_Dummy_Data_with_BPI-Compatible_Pipe_Variants.csv"
+file_path = r"/workspaces/bpi-forcast/FixUpdated_Dummy_Data_with_BPI-Compatible_Pipe_Variants.csv"
 data = load_data(file_path)
 model, features, data_encoded = train_model(data)
 

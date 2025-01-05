@@ -1,6 +1,7 @@
 streamlit 
 pandas 
 sklearn
+GradientBoostingRegressor
 numpy
 matplotlib
 re
