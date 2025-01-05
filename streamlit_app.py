@@ -50,7 +50,7 @@ model, features, data_encoded = train_model(data)
 
 # Streamlit UI
 st.sidebar.image(
-    r"C:\Users\aqsha\Downloads\654db0b264142.webp",
+    r"/workspaces/bpi-forcast/654db0b264142.webp",
     use_column_width=True
 )
 st.sidebar.title("PT Bakrie Pipe Industries")
