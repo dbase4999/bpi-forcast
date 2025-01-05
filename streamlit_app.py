@@ -45,7 +45,7 @@ def train_model(data):
 
 # File path
 file_path = r"/workspaces/bpi-forcast/FixUpdated_Dummy_Data_with_BPI-Compatible_Pipe_Variants.csv"
-data = load_data(file_path)
+data = (file_path)
 model, features, data_encoded = train_model(data)
 
 # Streamlit UI
