@@ -63,10 +63,7 @@ data = load_data(file_path)
 model, features, data_encoded = train_model(data)
 
 # Streamlit UI
-st.sidebar.image(
-    r"/workspaces/bpi-forcast/654db0b264142.webp",
-    use_column_width=True
-)
+st.sidebar.image("654db0b264142.webp", use_column_width=True)
 st.sidebar.title("PT Bakrie Pipe Industries")
 st.sidebar.write("Forecasting System for Technical Warehouse Management")
 
